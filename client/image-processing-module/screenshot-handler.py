@@ -11,7 +11,7 @@ class ImageProcessingModule:
     @staticmethod
     def record():
         t = time.time()
-        getProcessedScreenshot()
+        ImageProcessingModule.getProcessedScreenshot()
         dt = time.time() - t
         print("Elapsed Screenshot Time: {0}".format(dt))
 
@@ -25,17 +25,23 @@ class ImageProcessingModule:
         return processedIm
 
 def onKeyPress(key):
+    print(key)
     if key == keyboard.Key.home:
         recording = True
-        with keyboard.Listener(
-            on_press=awaitExit
-            on_release=onKeyRelease
-        ) as exitListener:
-            exitListener.join()
+        firstIteration = True
+        def awaitExit(key2):
+            global recording
+            if key2 == keyboard.Key.page_up:
+                recording = False # FIX: Function is called but recording is unchanged
         while recording:
-            def awaitExit(key2):
-                if key2 == keyboard.Key.page_up:
-                    recording = False
+            if firstIteration:
+                with keyboard.Listener(
+                    on_press=awaitExit,
+                    on_release=onKeyRelease
+                ) as exitListener:
+                    exitListener.join()
+                    firstIteration = False
+            
             ImageProcessingModule.record()
 
 def onKeyRelease(key):
@@ -43,9 +49,8 @@ def onKeyRelease(key):
         # Stop listener
         return False
             
-if __name__ == "main":
-    with keyboard.Listener(
-            on_press=onKeyPress,
-            on_release=onKeyRelease) as listener:
-        listener.join()
+with keyboard.Listener(
+    on_press=onKeyPress,
+    on_release=onKeyRelease) as listener:
+    listener.join()
 
