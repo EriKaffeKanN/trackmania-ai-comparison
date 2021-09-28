@@ -9,13 +9,25 @@ import time
 import math
 
 class Ray:
-    def __init__(self) -> None:
-        pass
+
+    minBrightness = 5
+
+    def __init__(self, theta) -> None:
+        self.theta = theta
+        self.stepX = math.cos(theta)
+        self.stepY = math.sin(theta)
+
+    def cast(self, baseCoordinates, pixelMap):
+        pos = baseCoordinates.copy()
+        while pixelMap[math.floor(pos.x), math.floor(pos.y)][0] > self.minBrightness: # R = B = G because monochrome
+            pos[0] += self.stepX
+            pos[1] += self.stepY
+        return math.sqrt(pos[0]*pos[0] + pos[1]*pos[1]) # FIX: Use numpy
 
 class ImageProcessingModule:
 
     @staticmethod
-    def record() -> None:
+    def benchmark() -> None:
         t = time.time()
         ImageProcessingModule.getProcessedScreenshot()
         dt = time.time() - t
@@ -36,11 +48,8 @@ class ImageProcessingModule:
         baseCoordinates = [img.size[0]//2, img.size[1]-1]
         rayQuantity = (angleMax-angleMin)//angleStep
         for i in range(rayQuantity):
-            theta = angleMin + angleStep*i
-            stepX = math.cos(theta)
-            stepY = math.sin(theta)
+            r = Ray(angleMin + angleStep*i)
         return None
-
 
 while True:
     if keyboard.is_pressed("home"):
