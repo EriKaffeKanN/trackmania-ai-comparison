@@ -55,7 +55,7 @@ class ImageProcessingModule:
         baseCoordinates = [img.size[0]//2, img.size[1]-1]
         lineLengths = []
         rayQuantity = int((angleMax-angleMin)//angleStep)
-        for i in range(rayQuantity + 1):
+        for i in range(rayQuantity + 2):
             r = Ray(angleMin + angleStep*i)
             lineLengths.append(r.cast(baseCoordinates, pixelMap, img.size[0], img.size[1]))
         return lineLengths
@@ -65,7 +65,7 @@ class ImageProcessingModule:
         draw = ImageDraw.Draw(img)
         baseCoordinates = [img.size[0]//2, img.size[1]-1]
         lineQuantity = int((angleMax-angleMin)//angleStep)
-        for l in range(lineQuantity + 1):
+        for l in range(lineQuantity + 2):
             theta = angleMin + angleStep*l
             stepX = math.cos(theta)
             stepY = -math.sin(theta)
@@ -86,10 +86,10 @@ while True:
         print("Done recording")
     if keyboard.is_pressed("o"):
         img = ImageProcessingModule.getProcessedScreenshot()
-        lines = ImageProcessingModule.getLineLengths(img, math.pi/12, math.pi-(math.pi/12), 0.1)
+        lines = ImageProcessingModule.getLineLengths(img, math.pi/12, math.pi-(math.pi/12), 5*math.pi/(6*12))
         print("Line values:")
         for l in lines:
             print(l)
-        ImageProcessingModule.visualizeLines(img, lines, math.pi/12, math.pi-(math.pi/12), 0.1)
+        ImageProcessingModule.visualizeLines(img, lines, math.pi/12, math.pi-(math.pi/12),  5*math.pi/(6*12))
     if keyboard.is_pressed("esc"):
         break
