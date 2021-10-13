@@ -1,9 +1,7 @@
-# Image Processing
+# Screenshot handling and image processing
 
-# Imports
 from PIL.Image import Image
 import pyautogui
-import keyboard
 from PIL import ImageEnhance, ImageDraw
 import time
 import math
@@ -78,18 +76,3 @@ class ImageProcessingModule:
             bbox = (int(pos[0]-1) - 20, int(pos[1]-1) - 20, int(pos[0]-1) + 20, int(pos[1]-1) + 20)
             draw.ellipse(bbox, fill="red")
         img.show()
-
-while True:
-    if keyboard.is_pressed("home"):
-        while not keyboard.is_pressed("end"):
-            ImageProcessingModule.getLineLengths(ImageProcessingModule.getProcessedScreenshot(), 0, 0, 0)
-        print("Done recording")
-    if keyboard.is_pressed("o"):
-        img = ImageProcessingModule.getProcessedScreenshot()
-        lines = ImageProcessingModule.getLineLengths(img, math.pi/12, math.pi-(math.pi/12), 5*math.pi/(6*12))
-        print("Line values:")
-        for l in lines:
-            print(l)
-        ImageProcessingModule.visualizeLines(img, lines, math.pi/12, math.pi-(math.pi/12),  5*math.pi/(6*12))
-    if keyboard.is_pressed("esc"):
-        break

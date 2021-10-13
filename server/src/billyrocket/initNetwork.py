@@ -2,12 +2,12 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-nInput = 12
+nInput = 13
 nHidden1 = 10
 nHidden2 = 6
-nOutput = 4
+nOutput = 3
 
-inputs = keras.Input(shape=(nInput,), name="gameStates") # Change to shape=(nImageData, nGameStateData) and deal with that
+inputs = keras.Input(shape=(nInput,), name="gameStates")
 x = layers.Dense(nHidden1, activation=tf.nn.tanh, name="dense1")(inputs)
 x = layers.Dense(nHidden2, activation=tf.nn.tanh, name="dense2")(x)
 output = layers.Dense(nOutput, activation=tf.nn.tanh, name="gameDecisions")(x)
