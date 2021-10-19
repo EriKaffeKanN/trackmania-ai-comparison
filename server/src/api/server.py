@@ -1,7 +1,14 @@
 import socket
+import json
 
-HOST = "127.0.0.1"
-PORT = 5656
+f = open("../../../connection.config.json", "r")
+config = json.loads(f.read())
+f.close()
+
+HOST = config["HOST"]
+PORT = config["PORT"]
+
+print(HOST, PORT)
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
