@@ -5,6 +5,7 @@ import pyautogui
 from PIL import ImageEnhance, ImageDraw
 import time
 import math
+from typing import List
 
 class Ray:
 
@@ -14,7 +15,6 @@ class Ray:
         self.theta = theta
         self.stepX = math.cos(theta)
         self.stepY = -math.sin(theta)
-        print("Steps: ", self.stepX, self.stepY)
 
     def cast(self, baseCoordinates, pixelMap, maxX, maxY) -> float:
         pos = baseCoordinates.copy()
@@ -48,7 +48,7 @@ class ImageProcessingModule:
     # Returns array of all lengths from the base of a given image to the nearest
     # black pixel for each angle between angleMin and angleMax with step angleStep
     @staticmethod
-    def getLineLengths(img, angleMin, angleMax, angleStep) -> list[int]:
+    def getLineLengths(img, angleMin, angleMax, angleStep) -> List[int]:
         pixelMap = img.load()
         baseCoordinates = [img.size[0]//2, img.size[1]-1]
         lineLengths = []
