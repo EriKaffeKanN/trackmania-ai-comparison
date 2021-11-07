@@ -1,6 +1,7 @@
 import socket
 import json
 import selectors
+import keyboard
 
 f = open("../../../connection.config.json", "r")
 config = json.loads(f.read())
@@ -95,11 +96,14 @@ def serviceConnection(key, mask):
             sent = sock.send(getOutData(data))
             data = capOutData(data, sent)
 
-# Event loop
-while True:
-    events = sel.select(timeout=None)
-    for key, mask in events:
-        if key.data is None:
-            acceptWrapper(key.fileobj)
-        else:
-            serviceConnection(key, mask)
+def runEventLoop():
+    while True:
+        events = sel.select(timeout=None)
+        for key, mask in events:
+            if keyboard.is_pressed("esc"):
+                return
+            if key.data is None:
+                acceptWrapper(key.fileobj)
+            else:
+                serviceConnection(key, mask)
+runEventLoop()
