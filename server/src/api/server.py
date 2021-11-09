@@ -45,10 +45,11 @@ def serviceConnection(key, mask):
             sock.close()
         if data.request == b'runNetwork':
             data.outdata = b'Running network lol'
-        # EW! Fix this
-        if data.request == b'\x15\x00\x00\x00updateGameState':
+        # Thank god strings in AngelScripts are the same as C strings
+        if data.request == b'updateGameState':
             # TODO: Update game state
             pass
+        print(data.request)
     if mask & selectors.EVENT_WRITE:
         if data.outdata and (not (sock.fileno() == -1)):
             sent = sock.send(data.outdata)

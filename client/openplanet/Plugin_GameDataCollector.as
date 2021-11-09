@@ -22,5 +22,9 @@ void Main()
     }
 
     print("Connected, ready to communicate");
-    sock.Write("updateGameState|10,20");
+    print(MwFoundations::CMwNod::CGameScriptVehicle::velocity);
+    /*while(true){
+        sock.WriteRaw("updateGameState|10,20");
+        yield();
+    }*/
 }
