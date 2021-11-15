@@ -4,6 +4,8 @@ from tensorflow.keras import layers
 import numpy as np
 
 class BillyRocket:
+
+    # Static
     nInput = 12
     nHidden1 = 10
     nHidden2 = 6
@@ -14,7 +16,7 @@ class BillyRocket:
     epochs = 2
 
     @staticmethod
-    def initNetwork():
+    def initNetwork() -> None:
         inputs = keras.Input(shape=(BillyRocket.nInput,), name="gameStates")
         x = layers.Dense(BillyRocket.nHidden1, activation=tf.nn.tanh, name="dense1")(inputs)
         x = layers.Dense(BillyRocket.nHidden2, activation=tf.nn.tanh, name="dense2")(x)
@@ -31,7 +33,7 @@ class BillyRocket:
         model.save("state")
     
     @staticmethod
-    def train():
+    def train() -> None:
         model = keras.models.load_model("state") # Get compiled(!!!) model
 
         # REMOVE: Replace with actual data and load them from a dataset folder
@@ -62,7 +64,15 @@ class BillyRocket:
             validation_data=(xVal, yVal) # Validation is performed at the end of each epoch
         )
         # The record for the model.fit() call is stored in history.history
+
+    # Non-static
+    def __init__(self, model) -> None:
+        self.model = model
     
-    def runNetwork(inputs):
-        model = keras.models.load_model("state")
-        return model(inputs, training=False)
+    def runNetwork(self, inputs) -> tf.Tensor:
+        return self.model(inputs, training=False)
+
+"""
+br = BillyRocket()
+print(br.runNetwork(np.array([[1,2,3,4,5,6,7,8,9,10,11,12]], dtype=np.float32)))
+"""

@@ -2,9 +2,15 @@ import socket
 import json
 import selectors
 import types
-from billyrocket import BillyRocket
+import sys
+import keras
+import numpy as np
 
-print("Prediction: ", BillyRocket.runNetwork(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 3))
+sys.path.append("../")
+from billyrocket.billyrocket import BillyRocket
+
+br = BillyRocket(keras.models.load_model("../billyrocket/state"))
+game_state = {"velocity": 0}
 
 f = open("../../../connection.config.json", "r")
 config = json.loads(f.read())
@@ -47,12 +53,15 @@ def serviceConnection(key, mask):
             sel.unregister(sock)
             sock.close()
         if data.request == b'runNetwork':
+            aBrInput = list(data.indata)
+            aBrInput.append(game_state["velocity"])
+            brInput = np.array([aBrInput], dtype=np.float32)
+            prediction = br.runNetwork(brInput)
+            print(prediction)
             data.outdata = b'Running network lol'
         # Thank god strings in AngelScripts are the same as C strings
         if data.request == b'updateGameState':
-            print(data.indata)
-            # TODO: Update game state
-            pass
+            game_state["velocity"] = float(data.indata)
     if mask & selectors.EVENT_WRITE:
         if data.outdata and (not (sock.fileno() == -1)):
             sent = sock.send(data.outdata)

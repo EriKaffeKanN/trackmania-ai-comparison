@@ -24,12 +24,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Single screenshots (for debug purposes)
         if keyboard.is_pressed("o"):
             img = IPM.getProcessedScreenshot()
-            lines = IPM.getLineLengths(img, math.pi/12, math.pi-(math.pi/12), 5*math.pi/(6*11))
-            iLines = map(math.floor, lines) # list[float] -> list[int]
+            fLines = IPM.getLineLengths(img, math.pi/11, math.pi-(math.pi/11), 5*math.pi/(6*10))
+            fNormalisedLines = map(lambda l: l * 255.0/1445.0, fLines)
+            iLines = map(math.floor, fNormalisedLines) # list[float] -> list[int]
             bLines = bytes(iLines) # list[int] -> bytes
             s.sendall(b'runNetwork|' + bLines)
             data = s.recv(1024)
             print("Server response: ", repr(data))
-            #IPM.visualizeLines(img, lines, math.pi/12, math.pi-(math.pi/12),  5*math.pi/(6*11))
+            #IPM.visualizeLines(img, fLines, math.pi/11, math.pi-(math.pi/11),  5*math.pi/(6*10))
         if keyboard.is_pressed("esc"):
             break
