@@ -4,7 +4,7 @@ from tensorflow.keras import layers
 import numpy as np
 
 class BillyRocket:
-    nInput = 13
+    nInput = 12
     nHidden1 = 10
     nHidden2 = 6
     nOutput = 3
@@ -63,8 +63,6 @@ class BillyRocket:
         )
         # The record for the model.fit() call is stored in history.history
     
-    def runNetwork():
+    def runNetwork(inputs):
         model = keras.models.load_model("state")
-        # PLACEHOLDER:
-        return (1, 0, 0, 0)
-    
+        return model(inputs, training=False)

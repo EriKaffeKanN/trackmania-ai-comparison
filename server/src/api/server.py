@@ -2,6 +2,9 @@ import socket
 import json
 import selectors
 import types
+from billyrocket import BillyRocket
+
+print("Prediction: ", BillyRocket.runNetwork(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 3))
 
 f = open("../../../connection.config.json", "r")
 config = json.loads(f.read())
@@ -47,9 +50,9 @@ def serviceConnection(key, mask):
             data.outdata = b'Running network lol'
         # Thank god strings in AngelScripts are the same as C strings
         if data.request == b'updateGameState':
+            print(data.indata)
             # TODO: Update game state
             pass
-        print(data.request)
     if mask & selectors.EVENT_WRITE:
         if data.outdata and (not (sock.fileno() == -1)):
             sent = sock.send(data.outdata)
