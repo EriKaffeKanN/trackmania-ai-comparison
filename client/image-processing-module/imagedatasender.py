@@ -23,6 +23,8 @@ def onPress(key):
         s.sendall(b'runNetwork|' + bLines)
         data = s.recv(1024)
         print("Server response: ", repr(data))
+    elif key == keyboard.Key.end:
+        s.sendall(b'trainNetwork|\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x01\x01\x01\x01')
     elif key == keyboard.Key.esc:
         return False # Terminates program
 

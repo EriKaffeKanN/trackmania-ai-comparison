@@ -10,7 +10,7 @@ sys.path.append("../")
 from billyrocket.billyrocket import BillyRocket
 
 br = BillyRocket(keras.models.load_model("../billyrocket/state"))
-game_state = {"velocity": 0}
+gameState = {"velocity": 0}
 
 f = open("../../../connection.config.json", "r")
 config = json.loads(f.read())
@@ -54,14 +54,30 @@ def serviceConnection(key, mask):
             sock.close()
         if data.request == b'runNetwork':
             aBrInput = list(data.indata)
-            aBrInput.append(game_state["velocity"])
+            aBrInput.append(gameState["velocity"])
             brInput = np.array([aBrInput], dtype=np.float32)
             prediction = br.runNetwork(brInput)
             print(prediction)
             data.outdata = b'Running network lol'
         # Thank god strings in AngelScripts are the same as C strings
-        if data.request == b'updateGameState':
-            game_state["velocity"] = float(data.indata)
+        elif data.request == b'trainNetwork':
+            # data.indata will look like this: [l0, l1, ..., l9, GAS, BRAKE, LEFT, RIGHT]
+            # where GAS, BRAKE, LEFT, RIGHT are all C booleans
+            lineLengths = list(data.indata[:10])
+            buttonsPressed = list(data.indata[10:])
+            
+            f = open("../billyrocket/training-data.json")
+            trainingData = json.load(f)
+            trainingData["TrainingExamples"].append({
+                "LineLengths": lineLengths,
+                "GameState": [gameState["velocity"]],
+                "KeyboardInput": buttonsPressed
+                })
+            print(trainingData)
+            f.close()
+
+        elif data.request == b'updateGameState':
+            gameState["velocity"] = float(data.indata)
     if mask & selectors.EVENT_WRITE:
         if data.outdata and (not (sock.fileno() == -1)):
             sent = sock.send(data.outdata)
