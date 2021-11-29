@@ -9,9 +9,11 @@ import numpy as np
 sys.path.append("../")
 from billyrocket.billyrocket import BillyRocket
 
+# Load AI
 br = BillyRocket(keras.models.load_model("../billyrocket/state"))
 gameState = {"velocity": 0}
 
+# Connection settings
 f = open("../../../connection.config.json", "r")
 config = json.loads(f.read())
 f.close()
@@ -19,6 +21,15 @@ f.close()
 HOST = config["HOST"]
 PORT = config["PORT"]
 
+# Fix backup
+f1 = open("../billyrocket/training-data-backup.json", 'w')
+f2 = open("../billyrocket/training-data.json", 'r')
+tmpDat = json.load(f2)
+f1.write(tmpDat)
+f1.close()
+f2.close()
+
+# Setup socket
 sel = selectors.DefaultSelector()
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -66,7 +77,7 @@ def serviceConnection(key, mask):
             lineLengths = list(data.indata[:10])
             buttonsPressed = list(data.indata[10:])
             
-            f = open("../billyrocket/training-data.json")
+            f = open("../billyrocket/training-data.json", 'w')
             trainingData = json.load(f)
             trainingData["TrainingExamples"].append({
                 "LineLengths": lineLengths,
@@ -83,7 +94,7 @@ def serviceConnection(key, mask):
             sent = sock.send(data.outdata)
             data.outdata = data.outdata[sent:]
 
-def runEventLoop():
+def main():
     while True:
         events = sel.select(timeout=None)
         for key, mask in events:
@@ -93,4 +104,4 @@ def runEventLoop():
                 serviceConnection(key, mask)
 
 if __name__ == "__main__":
-    runEventLoop()
+    main()
