@@ -1,3 +1,4 @@
+import json
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -38,8 +39,22 @@ class BillyRocket:
 
         # REMOVE: Replace with actual data and load them from a dataset folder
         # TODO: change to xTest = JsonConvert.thisandthat(y'know?)
-        xTrain = np.array([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]]) # Training Data
-        yTrain = np.array([0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1]) # Training Data Label
+        trainingExamples = []
+        trainingExamplesLabels = []
+        
+        with open("./training-data.json") as f:
+            trainingJson = json.load(f)
+            for ex in trainingJson["TrainingExamples"]:
+                trainingExamples.append(
+                    ex["LineLengths"] +
+                    ex["GameState"]
+                )
+                trainingExamplesLabels.append(
+                    ex["KeyboardInput"]
+                )
+
+        xTrain = np.array(trainingExamples) # Training Data
+        yTrain = np.array(trainingExamplesLabels) # Training Data Label
         xTest = np.array([]) # Test Data
         yTest = np.array([]) # Test Data Labels
 

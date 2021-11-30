@@ -25,7 +25,7 @@ PORT = config["PORT"]
 f1 = open("../billyrocket/training-data-backup.json", 'w')
 f2 = open("../billyrocket/training-data.json", 'r')
 tmpDat = json.load(f2)
-f1.write(tmpDat)
+f1.write(json.dumps(tmpDat))
 f1.close()
 f2.close()
 
@@ -72,21 +72,22 @@ def serviceConnection(key, mask):
             data.outdata = b'Running network lol'
         # Thank god strings in AngelScripts are the same as C strings
         elif data.request == b'trainNetwork':
-            # data.indata will look like this: [l0, l1, ..., l9, GAS, BRAKE, LEFT, RIGHT]
+            # data.indata will look like this: [l0, l1, ..., l10, GAS, BRAKE, LEFT, RIGHT]
             # where GAS, BRAKE, LEFT, RIGHT are all C booleans
-            lineLengths = list(data.indata[:10])
-            buttonsPressed = list(data.indata[10:])
+            lineLengths = list(data.indata[:11])
+            buttonsPressed = list(data.indata[11:])
             
-            f = open("../billyrocket/training-data.json", 'w')
-            trainingData = json.load(f)
-            trainingData["TrainingExamples"].append({
-                "LineLengths": lineLengths,
-                "GameState": [gameState["velocity"]],
-                "KeyboardInput": buttonsPressed
-                })
-            print(trainingData)
-            f.close()
-
+            trainingData = None
+            with open("../billyrocket/training-data.json", 'r') as f:
+                trainingData = json.load(f)
+                trainingData["TrainingExamples"].append({
+                    "LineLengths": lineLengths,
+                    "GameState": [gameState["velocity"]],
+                    "KeyboardInput": buttonsPressed
+                    })
+                print(trainingData)
+            with open("../billyrocket/training-data.json", 'w') as f:
+                f.write(json.dumps(trainingData))
         elif data.request == b'updateGameState':
             gameState["velocity"] = float(data.indata)
     if mask & selectors.EVENT_WRITE:
