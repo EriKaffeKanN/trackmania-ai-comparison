@@ -1,7 +1,9 @@
 # Imports
 from keyboard import on_release
 from imageprocessingmodule import ImageProcessingModule as IPM
-from pynput import keyboard
+from pynput import keyboard as pp
+from pynput.keyboard import Key, Controller
+import pyautogui
 import math
 import socket
 import json
@@ -26,6 +28,7 @@ def bGetLineLengths() -> bytes:
 
 def onPress(key):
     global y
+
     try:
         if key.char == 'w':
             y[0] = 1
@@ -36,17 +39,38 @@ def onPress(key):
         if key.char == 'j':
             print(y)
     except AttributeError:
-        if key == keyboard.Key.space:
+        if key == Key.space:
             y[1] = 1
-        elif key == keyboard.Key.home:
-            lines = bGetLineLengths()
-            s.sendall(b'runNetwork|' + lines)
-            data = s.recv(1024)
-            print("Server response: ", repr(data))
-        elif key == keyboard.Key.end:
+        if key == Key.home:
+            while True:
+                lines = bGetLineLengths()
+                s.sendall(b'runNetwork|' + lines)
+                data = s.recv(1024)
+                print(data)
+                if data == b'0':
+                    pyautogui.press('w')
+                    pyautogui.keyUp('a')
+                    pyautogui.keyUp('d')
+                    pyautogui.keyUp('space')
+                elif data == b'1':
+                    pyautogui.keyUp('w')
+                    pyautogui.keyUp('a')
+                    pyautogui.keyUp('d')
+                    pyautogui.press('space')
+                elif data == b'2':
+                    pyautogui.keyUp('w')
+                    pyautogui.press('a')
+                    pyautogui.keyUp('d')
+                    pyautogui.keyUp('space')
+                elif data == b'3':
+                    pyautogui.keyUp('w')
+                    pyautogui.keyUp('a')
+                    pyautogui.press('d')
+                    pyautogui.keyUp('space')
+        elif key == Key.end:
             lines = bGetLineLengths()
             s.sendall(b'trainNetwork|' + lines + bytes(y))
-        elif key == keyboard.Key.esc:
+        elif key == Key.esc:
             return False # Terminates program
 
 def onRelease(key):
@@ -59,12 +83,12 @@ def onRelease(key):
         if key.char == 'd':
             y[3] = 0
     except AttributeError:
-        if key == keyboard.Key.space:
+        if key == Key.space:
             y[1] = 0
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
-    with keyboard.Listener(
+    with pp.Listener(
             on_press=onPress,
             on_release=onRelease) as listener:
         listener.join()

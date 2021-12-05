@@ -31,7 +31,6 @@ f2.close()
 
 # Setup socket
 sel = selectors.DefaultSelector()
-
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
 s.listen()
@@ -67,9 +66,9 @@ def serviceConnection(key, mask):
             aBrInput = list(data.indata)
             aBrInput.append(gameState["velocity"])
             brInput = np.array([aBrInput], dtype=np.float32)
-            prediction = br.runNetwork(brInput)
-            print(prediction)
-            data.outdata = b'Running network lol'
+            outputNeurons = br.runNetwork(brInput)
+            prediction = np.argmax(outputNeurons)
+            data.outdata = str(prediction).encode("UTF-8")
         # Thank god strings in AngelScripts are the same as C strings
         elif data.request == b'trainNetwork':
             # data.indata will look like this: [l0, l1, ..., l10, GAS, BRAKE, LEFT, RIGHT]

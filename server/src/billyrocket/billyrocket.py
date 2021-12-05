@@ -10,7 +10,7 @@ class BillyRocket:
     nInput = 12
     nHidden1 = 10
     nHidden2 = 6
-    nOutput = 3
+    nOutput = 4
 
     validationReserve = 10
     batchSize = 5
@@ -37,8 +37,6 @@ class BillyRocket:
     def train() -> None:
         model = keras.models.load_model("state") # Get compiled(!!!) model
 
-        # REMOVE: Replace with actual data and load them from a dataset folder
-        # TODO: change to xTest = JsonConvert.thisandthat(y'know?)
         trainingExamples = []
         trainingExamplesLabels = []
         
@@ -84,5 +82,5 @@ class BillyRocket:
     def __init__(self, model) -> None:
         self.model = model
     
-    def runNetwork(self, inputs) -> tf.Tensor:
-        return self.model(inputs, training=False)
+    def runNetwork(self, inputs) -> np.array:
+        return self.model.predict(inputs)[0]
