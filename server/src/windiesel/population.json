@@ -1,0 +1,7 @@
+{
+    "Population": [
+        {"id":0, "DistanceCovered":50},
+        {"id":1, "DistanceCovered":30},
+        {"id":2, "DistanceCovered":20}
+    ]
+}

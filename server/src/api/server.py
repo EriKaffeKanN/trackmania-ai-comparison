@@ -84,7 +84,6 @@ def serviceConnection(key, mask):
                     "GameState": [gameState["velocity"]],
                     "KeyboardInput": buttonsPressed
                     })
-                print(trainingData)
             with open("../billyrocket/training-data.json", 'w') as f:
                 f.write(json.dumps(trainingData))
         elif data.request == b'updateGameState':

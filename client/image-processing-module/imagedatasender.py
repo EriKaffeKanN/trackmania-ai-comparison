@@ -4,6 +4,7 @@ from imageprocessingmodule import ImageProcessingModule as IPM
 from pynput import keyboard as pp
 from pynput.keyboard import Key, Controller
 import pyautogui
+import pydirectinput
 import math
 import socket
 import json
@@ -46,27 +47,26 @@ def onPress(key):
                 lines = bGetLineLengths()
                 s.sendall(b'runNetwork|' + lines)
                 data = s.recv(1024)
-                print(data)
                 if data == b'0':
-                    pyautogui.press('w')
-                    pyautogui.keyUp('a')
-                    pyautogui.keyUp('d')
-                    pyautogui.keyUp('space')
+                    pydirectinput.press('w')
+                    pydirectinput.keyUp('a')
+                    pydirectinput.keyUp('d')
+                    pydirectinput.keyUp('space')
                 elif data == b'1':
-                    pyautogui.keyUp('w')
-                    pyautogui.keyUp('a')
-                    pyautogui.keyUp('d')
-                    pyautogui.press('space')
+                    pydirectinput.keyUp('w')
+                    pydirectinput.keyUp('a')
+                    pydirectinput.keyUp('d')
+                    pydirectinput.press('space')
                 elif data == b'2':
-                    pyautogui.keyUp('w')
-                    pyautogui.press('a')
-                    pyautogui.keyUp('d')
-                    pyautogui.keyUp('space')
+                    pydirectinput.keyUp('w')
+                    pydirectinput.press('a')
+                    pydirectinput.keyUp('d')
+                    pydirectinput.keyUp('space')
                 elif data == b'3':
-                    pyautogui.keyUp('w')
-                    pyautogui.keyUp('a')
-                    pyautogui.press('d')
-                    pyautogui.keyUp('space')
+                    pydirectinput.keyUp('w')
+                    pydirectinput.keyUp('a')
+                    pydirectinput.press('d')
+                    pydirectinput.keyUp('space')
         elif key == Key.end:
             lines = bGetLineLengths()
             s.sendall(b'trainNetwork|' + lines + bytes(y))
