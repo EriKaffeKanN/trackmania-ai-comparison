@@ -5,6 +5,7 @@ from pynput import keyboard as pp
 from pynput.keyboard import Key, Controller
 import pyautogui
 import pydirectinput
+import keyboard
 import math
 import socket
 import json
@@ -44,6 +45,8 @@ def onPress(key):
             y[1] = 1
         if key == Key.home:
             while True:
+                if keyboard.is_pressed('esc'):
+                    break
                 lines = bGetLineLengths()
                 s.sendall(b'runNetwork|' + lines)
                 data = s.recv(1024)
@@ -68,8 +71,12 @@ def onPress(key):
                     pydirectinput.press('d')
                     pydirectinput.keyUp('space')
         elif key == Key.end:
+            while True:
+                if keyboard.is_pressed("esc"):
+                    break
             lines = bGetLineLengths()
             s.sendall(b'trainNetwork|' + lines + bytes(y))
+                
         elif key == Key.esc:
             return False # Terminates program
 

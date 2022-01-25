@@ -18,10 +18,10 @@ class BillyRocket:
 
     @staticmethod
     def initNetwork() -> None:
-        inputs = keras.Input(shape=(BillyRocket.nInput,), name="gameStates")
+        inputs = keras.Input(shape=(BillyRocket.nInput,), name="gamestates")
         x = layers.Dense(BillyRocket.nHidden1, activation=tf.nn.tanh, name="dense1")(inputs)
         x = layers.Dense(BillyRocket.nHidden2, activation=tf.nn.tanh, name="dense2")(x)
-        output = layers.Dense(BillyRocket.nOutput, activation=tf.nn.tanh, name="gameDecisions")(x)
+        output = layers.Dense(BillyRocket.nOutput, activation=tf.nn.tanh, name="gamedecisions")(x)
 
         model = keras.Model(inputs=inputs, outputs=output)
 
@@ -31,11 +31,11 @@ class BillyRocket:
             metrics=[keras.metrics.Accuracy()], # Useful for analysing performance
         )
 
-        model.save("state")
+        model.save("model")
     
     @staticmethod
     def train() -> None:
-        model = keras.models.load_model("state") # Get compiled(!!!) model
+        model = keras.models.load_model("model") # Get compiled(!!!) model
 
         trainingExamples = []
         trainingExamplesLabels = []
@@ -77,6 +77,7 @@ class BillyRocket:
             validation_data=(xVal, yVal) # Validation is performed at the end of each epoch
         )
         # The record for the model.fit() call is stored in history.history
+        model.save("new_model")
 
     # Non-static
     def __init__(self, model) -> None:
@@ -84,3 +85,6 @@ class BillyRocket:
     
     def runNetwork(self, inputs) -> np.array:
         return self.model.predict(inputs)[0]
+
+if __name__ == "__main__":
+    BillyRocket.train()

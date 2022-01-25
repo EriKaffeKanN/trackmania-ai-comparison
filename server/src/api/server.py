@@ -10,7 +10,7 @@ sys.path.append("../")
 from billyrocket.billyrocket import BillyRocket
 
 # Load AI
-br = BillyRocket(keras.models.load_model("../billyrocket/state"))
+br = BillyRocket(keras.models.load_model("../billyrocket/new_model"))
 gameState = {"velocity": 0}
 
 # Connection settings
@@ -72,13 +72,15 @@ def serviceConnection(key, mask):
         # Thank god strings in AngelScripts are the same as C strings
         elif data.request == b'trainNetwork':
             # data.indata will look like this: [l0, l1, ..., l10, GAS, BRAKE, LEFT, RIGHT]
-            # where GAS, BRAKE, LEFT, RIGHT are all C booleans
+            # where GAS, BRAKE, LEFT, RIGHT are all 1 or 0
             lineLengths = list(data.indata[:11])
             buttonsPressed = list(data.indata[11:])
             
             trainingData = None
             with open("../billyrocket/training-data.json", 'r') as f:
                 trainingData = json.load(f)
+                print("VELOCITY:")
+                print(gameState["velocity"])
                 trainingData["TrainingExamples"].append({
                     "LineLengths": lineLengths,
                     "GameState": [gameState["velocity"]],
